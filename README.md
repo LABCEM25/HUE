@@ -1,5 +1,3 @@
-<html lang="vi">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CEM HUẾ - Hệ thống Quản lý Phòng thí nghiệm</title>
@@ -136,7 +134,7 @@
                     <i class="fas fa-file-contract mr-1 lg:mr-2"></i><span class="hidden sm:inline">Hợp đồng</span><span class="sm:hidden">HĐ</span>
                 </button>
                 <button onclick="showTab('sampling')" class="tab-btn px-3 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 hover:text-green-600 hover:bg-green-50 transition-colors whitespace-nowrap">
-                    <i class="fas fa-vial mr-1 lg:mr-2"></i><span class="hidden md:inline">Biên bản lấy mẫu</span><span class="md:hidden hidden sm:inline">Lấy mẫu</span><span class="sm:hidden">LM</span>
+                    <i class="fas fa-vial mr-1 lg:mr-2"></i><span class="hidden md:inline">Lấy mẫu</span><span class="md:hidden hidden sm:inline">Lấy mẫu</span><span class="sm:hidden">LM</span>
                 </button>
                 <button onclick="showTab('coding')" class="tab-btn px-3 lg:px-6 py-3 lg:py-4 font-semibold text-gray-600 hover:text-green-600 hover:bg-green-50 transition-colors whitespace-nowrap">
                     <i class="fas fa-barcode mr-1 lg:mr-2"></i><span class="hidden sm:inline">Mã hóa</span><span class="sm:hidden">MH</span>
@@ -189,10 +187,10 @@
                 <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-3 lg:p-6 rounded-xl shadow-lg hover-scale">
                     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                         <div class="mb-2 lg:mb-0">
-                            <p class="text-purple-100 text-xs lg:text-sm">Tổng mẫu thực hiện</p>
-                            <p class="text-xl lg:text-2xl font-bold" id="totalFiles">0</p>
+                            <p class="text-purple-100 text-xs lg:text-sm">Khách hàng</p>
+                            <p class="text-xl lg:text-2xl font-bold" id="totalCustomers">0</p>
                         </div>
-                        <i class="fas fa-flask text-2xl lg:text-4xl text-purple-200 self-end lg:self-auto"></i>
+                        <i class="fas fa-users text-2xl lg:text-4xl text-purple-200 self-end lg:self-auto"></i>
                     </div>
                 </div>
             </div>
@@ -277,7 +275,7 @@
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-bold text-gray-800">
-                        <i class="fas fa-vial mr-2 text-blue-600"></i>Biên bản Lấy mẫu
+                        <i class="fas fa-vial mr-2 text-blue-600"></i>Lấy mẫu
                     </h3>
                     <button onclick="openUploadModal('sampling')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
                         <i class="fas fa-upload mr-2"></i>Tải lên biên bản
@@ -422,43 +420,13 @@
                     <div>
                         <h4 class="font-semibold text-gray-700 mb-4">Tiến độ theo dõi</h4>
                         <div id="customerProgress" class="bg-gray-50 rounded-lg p-4 text-center text-gray-500">
-                            Chọn khách hàng để xem tiến độ
+                            Chọn khách hàng để xem tiến độ thực hiện
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Quality Analysis by Customer -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-xl font-bold text-gray-800 mb-6">
-                    <i class="fas fa-chart-line mr-2 text-green-600"></i>Phân tích Chất lượng theo Khách hàng
-                </h3>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full table-auto">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-700">Khách hàng</th>
-                                <th class="px-4 py-3 text-center font-semibold text-gray-700">Tổng mẫu</th>
-                                <th class="px-4 py-3 text-center font-semibold text-gray-700">
-                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Đạt</span>
-                                </th>
-                                <th class="px-4 py-3 text-center font-semibold text-gray-700">
-                                    <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">Cần theo dõi</span>
-                                </th>
-                                <th class="px-4 py-3 text-center font-semibold text-gray-700">
-                                    <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Vượt</span>
-                                </th>
-                                <th class="px-4 py-3 text-center font-semibold text-gray-700">Tỷ lệ đạt</th>
-                                <th class="px-4 py-3 text-center font-semibold text-gray-700">Đánh giá</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200" id="qualityAnalysisTable">
-                            <tr><td colspan="7" class="text-center py-8 text-gray-500">Chưa có dữ liệu phân tích</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
         </div>
 
         <!-- Reports Tab -->
@@ -1055,6 +1023,48 @@
         }
 
         function generatePreview(fileData) {
+            // Try to display actual file content if it's text-based
+            let fileContent = '';
+            if (fileData.localData) {
+                try {
+                    // For text files, try to decode base64
+                    if (fileData.type === 'word' || fileData.type === 'pdf') {
+                        fileContent = `
+                            <div class="mt-4 p-4 bg-gray-100 rounded-lg">
+                                <h6 class="font-semibold mb-2">Nội dung file:</h6>
+                                <div class="bg-white p-4 rounded border max-h-96 overflow-y-auto">
+                                    <p class="text-gray-700">
+                                        <strong>Tên file:</strong> ${fileData.name}<br>
+                                        <strong>Khách hàng:</strong> ${fileData.customer}<br>
+                                        <strong>Mã tham chiếu:</strong> ${fileData.reference}<br>
+                                        <strong>Ngày tải lên:</strong> ${new Date(fileData.uploadDate).toLocaleDateString('vi-VN')}<br><br>
+                                        
+                                        <em>Đây là file ${fileData.type.toUpperCase()} đã được tải lên thành công vào hệ thống.</em><br><br>
+                                        
+                                        <strong>Thông tin chi tiết:</strong><br>
+                                        - Kích thước: ${formatFileSize(fileData.size)}<br>
+                                        - Định dạng: ${fileData.type.toUpperCase()}<br>
+                                        - Trạng thái: Đã lưu trữ<br>
+                                        - ID: ${fileData.id}<br><br>
+                                        
+                                        <em>File này có thể được tải xuống và sử dụng cho các mục đích theo dõi và báo cáo.</em>
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                    } else if (fileData.type === 'image') {
+                        fileContent = `
+                            <div class="mt-4">
+                                <h6 class="font-semibold mb-2">Xem trước hình ảnh:</h6>
+                                <img src="${fileData.localData}" alt="${fileData.name}" class="max-w-full h-auto rounded-lg border">
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.log('Cannot preview file content:', error);
+                }
+            }
+            
             return `
                 <div class="bg-white border rounded-lg p-6 shadow-sm">
                     <div class="flex items-center mb-4">
@@ -1071,10 +1081,10 @@
                             <strong>Mã tham chiếu:</strong> ${fileData.reference}<br>
                             <strong>Ngày tải lên:</strong> ${new Date(fileData.uploadDate).toLocaleDateString('vi-VN')}<br>
                             <strong>Kích thước:</strong> ${formatFileSize(fileData.size)}<br>
-                            <strong>Loại file:</strong> ${fileData.type.toUpperCase()}<br><br>
-                            <em>Đây là preview mẫu cho file đã tải lên...</em>
+                            <strong>Loại file:</strong> ${fileData.type.toUpperCase()}
                         </p>
                     </div>
+                    ${fileContent}
                 </div>
             `;
         }
@@ -1148,7 +1158,7 @@
             document.getElementById('activeContracts').textContent = fileDatabase.contracts.length;
             document.getElementById('todaySamples').textContent = getTodaySamplesCount();
             document.getElementById('inAnalysis').textContent = fileDatabase.analysis.length;
-            document.getElementById('totalFiles').textContent = getTotalFilesCount();
+            document.getElementById('totalCustomers').textContent = getTotalCustomersCount();
             document.getElementById('dailySamples').textContent = getTodaySamplesCount();
             
             // Load dashboard components
@@ -1163,8 +1173,10 @@
             ).length;
         }
 
-        function getTotalFilesCount() {
-            return Object.values(fileDatabase).reduce((sum, arr) => sum + arr.length, 0);
+        function getTotalCustomersCount() {
+            // Count customers who have completed results
+            const customersWithResults = new Set(fileDatabase.results.map(f => f.customer));
+            return customersWithResults.size;
         }
 
         function loadRecentActivities() {
@@ -1185,8 +1197,8 @@
                 <div class="flex items-center p-4 bg-${file.color}-50 rounded-lg hover:bg-${file.color}-100 transition-colors">
                     <i class="fas ${file.icon} text-${file.color}-600 mr-3"></i>
                     <div class="flex-1">
-                        <p class="font-semibold">Tải lên ${file.name}</p>
-                        <p class="text-sm text-gray-600">${file.customer} - ${file.reference}</p>
+                        <p class="font-semibold">${file.reference}</p>
+                        <p class="text-sm text-gray-600">${file.customer}</p>
                     </div>
                     <span class="text-sm text-gray-500">${getTimeAgo(file.uploadDate)}</span>
                 </div>
@@ -1410,7 +1422,7 @@
                 const hasFiles = customerFiles.length > 0;
                 
                 return `
-                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" onclick="showCustomerProgress('${customer}')">
                         <div class="flex justify-between items-start">
                             <div class="flex-1">
                                 <h5 class="font-semibold text-gray-800">${customer}</h5>
@@ -1420,7 +1432,13 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">${customerFiles.length}</span>
-                                <button onclick="deleteCustomer('${customer}')" class="text-red-600 hover:text-red-800 p-1" title="Xóa khách hàng">
+                                <button onclick="event.stopPropagation(); exportCustomerProfile('${customer}')" class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-sm" title="Xuất hồ sơ">
+                                    <i class="fas fa-download text-xs"></i>
+                                </button>
+                                <button onclick="event.stopPropagation(); showCustomerQR('${customer}')" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-sm" title="QR theo dõi">
+                                    <i class="fas fa-qrcode text-xs"></i>
+                                </button>
+                                <button onclick="event.stopPropagation(); deleteCustomer('${customer}')" class="text-red-600 hover:text-red-800 p-1" title="Xóa khách hàng">
                                     <i class="fas fa-trash text-sm"></i>
                                 </button>
                             </div>
@@ -1429,8 +1447,7 @@
                 `;
             }).join('');
             
-            // Load quality analysis table
-            loadQualityAnalysis();
+
         }
 
         function loadReports() {
@@ -1685,95 +1702,83 @@
             document.getElementById('connectedSamples').textContent = uniqueCustomers.size;
         }
 
-        // Quality Analysis Functions
-        function loadQualityAnalysis() {
-            const tbody = document.getElementById('qualityAnalysisTable');
+        // Customer Progress Functions
+        function showCustomerProgress(customer) {
+            const progressContainer = document.getElementById('customerProgress');
             
-            // Get unique customers from files
-            const allFiles = [
-                ...fileDatabase.contracts,
-                ...fileDatabase.sampling,
-                ...fileDatabase.analysis,
-                ...fileDatabase.results
+            // Find related files for this customer
+            const relatedFiles = {
+                contracts: fileDatabase.contracts.filter(f => f.customer === customer),
+                sampling: fileDatabase.sampling.filter(f => f.customer === customer),
+                results: fileDatabase.results.filter(f => f.customer === customer)
+            };
+            
+            const progressSteps = [
+                {
+                    title: 'Hợp đồng',
+                    icon: 'fa-file-contract',
+                    color: 'blue',
+                    files: relatedFiles.contracts,
+                    status: relatedFiles.contracts.length > 0 ? 'completed' : 'pending'
+                },
+                {
+                    title: 'Lấy mẫu',
+                    icon: 'fa-vial',
+                    color: 'green',
+                    files: relatedFiles.sampling,
+                    status: relatedFiles.sampling.length > 0 ? 'completed' : 'pending'
+                },
+                {
+                    title: 'Mã hóa',
+                    icon: 'fa-barcode',
+                    color: 'yellow',
+                    files: fileDatabase.coding.filter(f => f.customer === customer),
+                    status: fileDatabase.coding.filter(f => f.customer === customer).length > 0 ? 'completed' : 'pending'
+                },
+                {
+                    title: 'Phân tích',
+                    icon: 'fa-microscope',
+                    color: 'orange',
+                    files: fileDatabase.analysis.filter(f => f.customer === customer),
+                    status: fileDatabase.analysis.filter(f => f.customer === customer).length > 0 ? 'completed' : 'pending'
+                },
+                {
+                    title: 'Kết quả',
+                    icon: 'fa-chart-line',
+                    color: 'purple',
+                    files: relatedFiles.results,
+                    status: relatedFiles.results.length > 0 ? 'completed' : 'pending'
+                }
             ];
             
-            const customerData = {};
-            
-            // Group files by customer
-            allFiles.forEach(file => {
-                if (!customerData[file.customer]) {
-                    customerData[file.customer] = {
-                        total: 0,
-                        passed: 0,
-                        monitoring: 0,
-                        exceeded: 0
-                    };
-                }
-                customerData[file.customer].total++;
-            });
-            
-            // Simulate quality analysis results
-            Object.keys(customerData).forEach(customer => {
-                const total = customerData[customer].total;
-                
-                // Generate random but realistic quality distribution
-                const passedRate = 0.6 + Math.random() * 0.3; // 60-90% passed
-                const exceededRate = Math.random() * 0.15; // 0-15% exceeded
-                const monitoringRate = 1 - passedRate - exceededRate; // remainder
-                
-                customerData[customer].passed = Math.floor(total * passedRate);
-                customerData[customer].exceeded = Math.floor(total * exceededRate);
-                customerData[customer].monitoring = total - customerData[customer].passed - customerData[customer].exceeded;
-            });
-            
-            if (Object.keys(customerData).length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">Chưa có dữ liệu phân tích</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = Object.entries(customerData).map(([customer, data]) => {
-                const passRate = data.total > 0 ? Math.round((data.passed / data.total) * 100) : 0;
-                
-                let rating = 'Tốt';
-                let ratingColor = 'green';
-                
-                if (passRate < 70) {
-                    rating = 'Cần cải thiện';
-                    ratingColor = 'red';
-                } else if (passRate < 85) {
-                    rating = 'Khá';
-                    ratingColor = 'yellow';
-                }
-                
-                return `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 font-medium">${customer}</td>
-                        <td class="px-4 py-3 text-center">
-                            <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-medium">${data.total}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">${data.passed}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm font-medium">${data.monitoring}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm font-medium">${data.exceeded}</span>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <div class="flex items-center justify-center space-x-2">
-                                <div class="w-16 bg-gray-200 rounded-full h-2">
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: ${passRate}%"></div>
+            progressContainer.innerHTML = `
+                <div class="mb-4">
+                    <h5 class="font-semibold text-gray-800 mb-2">Tiến độ thực hiện: ${customer}</h5>
+                </div>
+                <div class="space-y-3">
+                    ${progressSteps.map((step, index) => {
+                        const isCompleted = step.status === 'completed';
+                        const isActive = isCompleted || (index === 0 && relatedFiles.contracts.length === 0);
+                        
+                        return `
+                            <div class="flex items-center space-x-3 p-3 rounded-lg ${isCompleted ? 'bg-green-50 border border-green-200' : isActive ? `bg-${step.color}-50 border border-${step.color}-200` : 'bg-gray-50 border border-gray-200'}">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center ${isCompleted ? 'bg-green-600 text-white' : isActive ? `bg-${step.color}-600 text-white` : 'bg-gray-300 text-gray-600'}">
+                                    <i class="fas ${isCompleted ? 'fa-check' : step.icon} text-sm"></i>
                                 </div>
-                                <span class="text-sm font-medium">${passRate}%</span>
+                                <div class="flex-1">
+                                    <h6 class="font-medium text-gray-800">${step.title}</h6>
+                                    <p class="text-sm ${isCompleted ? 'text-green-600' : isActive ? `text-${step.color}-600` : 'text-gray-500'}">
+                                        ${isCompleted ? 'Hoàn thành' : isActive ? 'Đang thực hiện' : 'Chờ thực hiện'}
+                                    </p>
+                                </div>
+                                <span class="bg-${isCompleted ? 'green' : isActive ? step.color : 'gray'}-100 text-${isCompleted ? 'green' : isActive ? step.color : 'gray'}-800 px-2 py-1 rounded text-sm font-medium">
+                                    ${step.files.length} file
+                                </span>
                             </div>
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <span class="bg-${ratingColor}-100 text-${ratingColor}-800 px-2 py-1 rounded text-sm font-medium">${rating}</span>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+                        `;
+                    }).join('')}
+                </div>
+            `;
         }
 
         // QR Tracking Functions
@@ -1927,6 +1932,206 @@
             }).join('');
         }
 
+        // Customer Export and QR Functions
+        function exportCustomerProfile(customer) {
+            const customerFiles = {
+                contracts: fileDatabase.contracts.filter(f => f.customer === customer),
+                sampling: fileDatabase.sampling.filter(f => f.customer === customer),
+                coding: fileDatabase.coding.filter(f => f.customer === customer),
+                analysis: fileDatabase.analysis.filter(f => f.customer === customer),
+                results: fileDatabase.results.filter(f => f.customer === customer)
+            };
+            
+            const exportData = {
+                customer: customer,
+                exportDate: new Date().toISOString(),
+                profile: {
+                    contracts: customerFiles.contracts,
+                    sampling: customerFiles.sampling,
+                    coding: customerFiles.coding,
+                    analysis: customerFiles.analysis,
+                    results: customerFiles.results
+                },
+                summary: {
+                    totalFiles: Object.values(customerFiles).reduce((sum, arr) => sum + arr.length, 0),
+                    completedSteps: [
+                        customerFiles.contracts.length > 0 ? 'Hợp đồng' : null,
+                        customerFiles.sampling.length > 0 ? 'Lấy mẫu' : null,
+                        customerFiles.coding.length > 0 ? 'Mã hóa' : null,
+                        customerFiles.analysis.length > 0 ? 'Phân tích' : null,
+                        customerFiles.results.length > 0 ? 'Kết quả' : null
+                    ].filter(step => step !== null)
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ho-so-${customer.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showNotification(`Đã xuất hồ sơ khách hàng: ${customer}`, 'success');
+        }
+
+        function showCustomerQR(customer) {
+            document.getElementById('qrTrackingTitle').textContent = `Theo dõi khách hàng: ${customer}`;
+            document.getElementById('qrTrackingSubtitle').textContent = `QR Code theo dõi tiến độ`;
+            
+            // Generate QR Code for customer
+            generateCustomerQRCode(customer);
+            
+            // Load customer progress
+            loadCustomerProgressForQR(customer);
+            
+            // Show modal
+            document.getElementById('qrTrackingModal').classList.remove('hidden');
+            document.getElementById('qrTrackingModal').classList.add('flex');
+        }
+
+        function generateCustomerQRCode(customer) {
+            const qrContainer = document.getElementById('qrCodeContainer');
+            qrContainer.innerHTML = ''; // Clear previous QR code
+            
+            // Create tracking data for customer
+            const trackingData = {
+                type: 'customer',
+                customer: customer,
+                url: `https://cem-hue.vn/customer/${encodeURIComponent(customer)}`,
+                timestamp: new Date().toISOString(),
+                files: {
+                    contracts: fileDatabase.contracts.filter(f => f.customer === customer).length,
+                    sampling: fileDatabase.sampling.filter(f => f.customer === customer).length,
+                    coding: fileDatabase.coding.filter(f => f.customer === customer).length,
+                    analysis: fileDatabase.analysis.filter(f => f.customer === customer).length,
+                    results: fileDatabase.results.filter(f => f.customer === customer).length
+                }
+            };
+            
+            const qrData = JSON.stringify(trackingData);
+            
+            // Generate QR code
+            QRCode.toCanvas(qrData, { width: 200, margin: 2 }, function (error, canvas) {
+                if (error) {
+                    console.error('QR Code generation error:', error);
+                    qrContainer.innerHTML = '<p class="text-red-500">Lỗi tạo QR code</p>';
+                    return;
+                }
+                
+                canvas.className = 'border border-gray-300 rounded-lg';
+                qrContainer.appendChild(canvas);
+                
+                // Add download button
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'mt-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm';
+                downloadBtn.innerHTML = '<i class="fas fa-download mr-1"></i>Tải QR';
+                downloadBtn.onclick = () => downloadQRCode(canvas, customer);
+                qrContainer.appendChild(downloadBtn);
+            });
+        }
+
+        function loadCustomerProgressForQR(customer) {
+            const progressContainer = document.getElementById('contractProgress');
+            
+            // Find related files for this customer
+            const relatedFiles = {
+                contracts: fileDatabase.contracts.filter(f => f.customer === customer),
+                sampling: fileDatabase.sampling.filter(f => f.customer === customer),
+                coding: fileDatabase.coding.filter(f => f.customer === customer),
+                analysis: fileDatabase.analysis.filter(f => f.customer === customer),
+                results: fileDatabase.results.filter(f => f.customer === customer)
+            };
+            
+            const progressSteps = [
+                {
+                    title: 'Hợp đồng',
+                    icon: 'fa-file-contract',
+                    color: 'blue',
+                    files: relatedFiles.contracts,
+                    status: relatedFiles.contracts.length > 0 ? 'completed' : 'pending'
+                },
+                {
+                    title: 'Lấy mẫu',
+                    icon: 'fa-vial',
+                    color: 'green',
+                    files: relatedFiles.sampling,
+                    status: relatedFiles.sampling.length > 0 ? 'completed' : 'pending'
+                },
+                {
+                    title: 'Mã hóa',
+                    icon: 'fa-barcode',
+                    color: 'yellow',
+                    files: relatedFiles.coding,
+                    status: relatedFiles.coding.length > 0 ? 'completed' : 'pending'
+                },
+                {
+                    title: 'Phân tích',
+                    icon: 'fa-microscope',
+                    color: 'orange',
+                    files: relatedFiles.analysis,
+                    status: relatedFiles.analysis.length > 0 ? 'completed' : 'pending'
+                },
+                {
+                    title: 'Kết quả',
+                    icon: 'fa-chart-line',
+                    color: 'purple',
+                    files: relatedFiles.results,
+                    status: relatedFiles.results.length > 0 ? 'completed' : 'pending'
+                }
+            ];
+            
+            progressContainer.innerHTML = progressSteps.map((step, index) => {
+                const isCompleted = step.status === 'completed';
+                const isActive = isCompleted || (index === 0); // First step is always active
+                
+                return `
+                    <div class="border border-gray-200 rounded-lg p-4 ${isCompleted ? 'bg-green-50 border-green-200' : isActive ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'}">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center ${isCompleted ? 'bg-green-600 text-white' : isActive ? `bg-${step.color}-600 text-white` : 'bg-gray-300 text-gray-600'}">
+                                    <i class="fas ${isCompleted ? 'fa-check' : step.icon}"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">${step.title}</h5>
+                                    <p class="text-sm ${isCompleted ? 'text-green-600' : isActive ? `text-${step.color}-600` : 'text-gray-500'}">
+                                        ${isCompleted ? 'Hoàn thành' : isActive ? 'Đang thực hiện' : 'Chờ thực hiện'}
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="bg-${isCompleted ? 'green' : isActive ? step.color : 'gray'}-100 text-${isCompleted ? 'green' : isActive ? step.color : 'gray'}-800 px-2 py-1 rounded text-sm font-medium">
+                                ${step.files.length} file
+                            </span>
+                        </div>
+                        
+                        ${step.files.length > 0 ? `
+                            <div class="space-y-2">
+                                ${step.files.map(file => `
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas ${getFileIcon(file.type)} ${getFileColor(file.type)}"></i>
+                                            <span class="text-sm font-medium">${file.reference}</span>
+                                            <span class="text-xs text-gray-500">${new Date(file.uploadDate).toLocaleDateString('vi-VN')}</span>
+                                        </div>
+                                        <div class="flex space-x-1">
+                                            <button onclick="previewFile(${JSON.stringify(file).replace(/"/g, '&quot;')})" class="text-blue-600 hover:text-blue-800 p-1" title="Xem trước">
+                                                <i class="fas fa-eye text-sm"></i>
+                                            </button>
+                                            <button onclick="downloadFile(${JSON.stringify(file).replace(/"/g, '&quot;')})" class="text-green-600 hover:text-green-800 p-1" title="Tải xuống">
+                                                <i class="fas fa-download text-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <p class="text-sm text-gray-500 italic">Chưa có file nào</p>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
         // Export/Import functions
         function exportAllData() {
             const exportData = {
@@ -1983,5 +2188,5 @@
             input.click();
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966ae0b7f126e300',t:'MTc1Mzc3Mzg3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966b0a7fe614f51a',t:'MTc1Mzc3NTU5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
